@@ -16,9 +16,9 @@ export default function AnalyticsPage() {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="card p-6"><h2 className="font-bold text-graphite mb-4">Спрос по нишам</h2><BarList data={topNiches} /></div>
-          <div className="card p-6"><h2 className="font-bold text-graphite mb-4">Спрос по города</h2><BarList data={topCities} /></div>
-          <div className="card p-6"><h2 className="font-bold text-graphite mb-4">Эфдективность источников</h2><Donut data={sourcesBreakdown} /></div>
-          <div className="card p-6"><h2 className="font-bold text-graphite mb-4">Воронка �о статусам</h2><Funnel data={funnel} /></div>
+          <div className="card p-6"><h2 className="font-bold text-graphite mb-4">Спрос по городам</h2><BarList data={topCities} /></div>
+          <div className="card p-6"><h2 className="font-bold text-graphite mb-4">Эффективность источников</h2><Donut data={sourcesBreakdown} /></div>
+          <div className="card p-6"><h2 className="font-bold text-graphite mb-4">Воронка по статусам</h2><Funnel data={funnel} /></div>
         </div>
         <div className="card p-6">
           <h2 className="font-bold text-graphite mb-4">Эффективность менеджеров</h2>
