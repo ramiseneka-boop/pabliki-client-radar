@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background-color: #F6F8FB;
+  color: #1F2937;
+  -webkit-font-smoothing: antialiased;
+}
+
+.card {
+  @apply bg-white rounded-xl2 shadow-card border border-slate-200/70;
+}
