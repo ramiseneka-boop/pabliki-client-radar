@@ -2,8 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Topbar from "@/components/Topbar";
 import ScoreBadge from "@/components/ScoreBadge";
+import TemperatureBadge from "@/components/TemperatureBadge";
+import SlaBadge from "@/components/SlaBadge";
+import MoneyScoreCard from "@/components/MoneyScoreCard";
 import {
-  leads, tenge, triggerLabels, actionLabels, statusLabels,
+  leads, tenge, triggerLabels, actionLabels, statusLabels, doNotContactList,
 } from "@/lib/mock";
 
 const breakdownLabels: Record<string, string> = {
@@ -23,11 +26,34 @@ export default function LeadCard({ params }: { params: { id: string } }) {
   const lead = leads.find((l) => l.id === params.id);
   if (!lead) return notFound();
 
+  const dncMatch = doNotContactList.find(
+    (dnc) =>
+      (dnc.bin && lead.bin && dnc.bin === lead.bin) ||
+      (dnc.phone && lead.contacts.phone && dnc.phone === lead.contacts.phone) ||
+      (dnc.phone && lead.contacts.whatsapp && dnc.phone === lead.contacts.whatsapp)
+  );
+
   return (
     <>
       <Topbar title={lead.company} subtitle={`${lead.id} · ${lead.category}`} />
       <div className="p-8">
         <Link href="/leads" className="text-sm text-brand mb-4 inline-block">← К списку лидов</Link>
+
+        {dncMatch && (
+          <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm font-semibold flex items-center gap-2">
+            ⚠ Не контактировать: {dncMatch.reason} (добавлено {dncMatch.addedAt})
+          </div>
+        )}
+
+        <div className="flex items-center gap-2 mb-6 flex-wrap">
+          {lead.temperature && <TemperatureBadge temperature={lead.temperature} />}
+          {lead.slaStatus && <SlaBadge status={lead.slaStatus} deadlineAt={lead.slaDeadlineAt} showCountdown />}
+          {lead.isFounderBoosted && (
+            <span className="inline-flex items-center gap-1.5 rounded-full ring-1 font-semibold text-xs px-2.5 py-1 bg-amber-50 text-amber-700 ring-amber-200">
+              ★ Founder Boost
+            </span>
+          )}
+        </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* Левая колонка — идентификация */}
@@ -68,6 +94,11 @@ export default function LeadCard({ params }: { params: { id: string } }) {
                 {lead.contacts.website && <Row k="Сайт" v={lead.contacts.website} />}
               </dl>
               <div className="mt-3 text-xs text-slate-400">Источник контакта: {lead.source}</div>
+              {lead.sourceConfidence !== undefined && (
+                <div className="mt-1 text-xs text-slate-400">
+                  Источник: надёжность {Math.round(lead.sourceConfidence * 100)}%
+                </div>
+              )}
             </div>
           </div>
 
@@ -105,6 +136,13 @@ export default function LeadCard({ params }: { params: { id: string } }) {
               </div>
               <div className="mt-4 p-3 rounded-lg bg-brand-soft text-sm text-graphite">{lead.scoreExplanation}</div>
             </div>
+
+            <MoneyScoreCard
+              moneyPriorityScore={lead.moneyPriorityScore}
+              dealProbability={lead.dealProbability}
+              potentialDealSize={lead.potentialDealSize}
+              expectedMargin={lead.expectedMargin}
+            />
 
             <div className="card p-6">
               <h3 className="font-bold text-graphite mb-4">AI-рекомендация</h3>

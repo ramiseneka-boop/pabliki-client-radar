@@ -4,13 +4,19 @@ import { usePathname } from "next/navigation";
 
 const nav = [
   { href: "/", label: "Dashboard", icon: "▦" },
+  { href: "/workday", label: "Мой день", icon: "☀" },
   { href: "/leads", label: "Лиды", icon: "◎" },
+  { href: "/quick-wins", label: "Quick Wins", icon: "⚡" },
   { href: "/signals", label: "Сигналы", icon: "📡" },
   { href: "/sources", label: "Источники", icon: "🔌" },
   { href: "/tasks", label: "Задачи", icon: "✓" },
   { href: "/messages", label: "Сообщения", icon: "✉" },
+  { href: "/scripts", label: "Скрипты продаж", icon: "📜" },
+  { href: "/replies", label: "Классификатор ответов", icon: "💬" },
+  { href: "/offers", label: "Офферы", icon: "🎯" },
   { href: "/import", label: "Импорт", icon: "⇪" },
   { href: "/analytics", label: "Аналитика", icon: "📊" },
+  { href: "/founder", label: "Founder Control", icon: "👑" },
   { href: "/settings", label: "Настройки / API", icon: "⚙" },
 ];
 
