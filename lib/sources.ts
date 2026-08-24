@@ -5,7 +5,6 @@
 import { SourceConnector } from "./types";
 
 export const sources: SourceConnector[] = [
-  // --- базовые источники, уже существующие на демо-странице app/sources/page.tsx ---
   {
     key: "pabliki_site",
     name: "Сайт Pabliki.kz (webhooks)",
@@ -143,8 +142,6 @@ export const sources: SourceConnector[] = [
     required_env_vars: [],
     count: 9,
   },
-
-  // --- новые источники ---
   {
     key: "old_clients_import",
     name: "Импорт старых клиентов",
@@ -198,3 +195,21 @@ export const sources: SourceConnector[] = [
     notes: "Всплеск новых отзывов как индикатор активности/роста бизнеса.",
   },
 ];
+
+// Server-side helper used by source health routes. A connector that explicitly
+// stays mock/error/disabled keeps that state. For real connectors, env access
+// decides whether the configured integration can be considered active.
+export function getEffectiveSources(): SourceConnector[] {
+  return sources.map((source) => {
+    if (source.status === "mock" || source.status === "error" || source.status === "disabled") {
+      return { ...source };
+    }
+
+    const missing = source.required_env_vars.filter((key) => !process.env[key]);
+    if (source.required_env_vars.length > 0) {
+      return { ...source, status: missing.length === 0 ? "active" : "pending_access" };
+    }
+
+    return { ...source };
+  });
+}
