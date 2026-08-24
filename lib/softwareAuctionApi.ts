@@ -74,13 +74,12 @@ export type AuctionActivity = {
 };
 
 const SESSION_KEY = "software-auction-session-v1";
+const FALLBACK_SUPABASE_URL = "https://ilosellimgqkjxjlixxj.supabase.co";
+const FALLBACK_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7rzdvvtJepEW9KngVocONw_Xl8SJUvt";
 
 function config() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/$/, "") || "";
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-  if (!url || !anonKey) {
-    throw new Error("Supabase не настроен: добавьте NEXT_PUBLIC_SUPABASE_URL и NEXT_PUBLIC_SUPABASE_ANON_KEY.");
-  }
+  const url = (process.env.NEXT_PUBLIC_SUPABASE_URL || FALLBACK_SUPABASE_URL).replace(/\/$/, "");
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || FALLBACK_SUPABASE_PUBLISHABLE_KEY;
   return { url, anonKey };
 }
 
@@ -197,35 +196,64 @@ export async function loadAuctionData(session: AuctionSession) {
 }
 
 export async function bootstrapAuction(session: AuctionSession) {
-  const existing = await restRequest<AuctionSegment[]>("software_auction_segments?select=id&limit=1", session);
-  if (existing.length) return loadAuctionData(session);
+  let segments = await restRequest<AuctionSegment[]>(
+    "software_auction_segments?select=*&order=priority.asc",
+    session
+  );
 
-  const segments = await restRequest<AuctionSegment[]>("software_auction_segments?select=*", session, {
-    method: "POST",
-    headers: { Prefer: "return=representation" },
-    body: JSON.stringify(SEGMENT_TEMPLATES.map((s) => ({ ...s, user_id: session.user.id }))),
+  const existingCodes = new Set(segments.map((segment) => segment.code));
+  const missingSegments = SEGMENT_TEMPLATES.filter((segment) => !existingCodes.has(segment.code));
+
+  if (missingSegments.length) {
+    const inserted = await restRequest<AuctionSegment[]>("software_auction_segments?select=*", session, {
+      method: "POST",
+      headers: { Prefer: "return=representation" },
+      body: JSON.stringify(missingSegments.map((segment) => ({ ...segment, user_id: session.user.id }))),
+    });
+    segments = [...segments, ...inserted].sort((a, b) => a.priority - b.priority);
+  }
+
+  const byCode = new Map(segments.map((segment) => [segment.code, segment.id]));
+  const existingCompanies = await restRequest<Array<Pick<AuctionCompany, "segment_id" | "name">>>(
+    "software_auction_companies?select=segment_id,name",
+    session
+  );
+  const existingCompanyKeys = new Set(
+    existingCompanies.map((company) => `${company.segment_id}::${company.name.trim().toLowerCase()}`)
+  );
+
+  const missingCompanies = COMPANY_TEMPLATES.flatMap((company) => {
+    const segmentId = byCode.get(company.segment_code);
+    if (!segmentId) return [];
+    const key = `${segmentId}::${company.name.trim().toLowerCase()}`;
+    if (existingCompanyKeys.has(key)) return [];
+    return [
+      {
+        user_id: session.user.id,
+        segment_id: segmentId,
+        name: company.name,
+        tier: company.tier,
+        stage: "research",
+        current_software: company.current_software,
+        evidence_url: company.evidence_url,
+        evidence_note: company.evidence_note,
+        evidence_confidence: company.evidence_confidence,
+        decision_maker_role: company.decision_maker_role,
+        why_now: company.why_now,
+        estimated_tco_kzt: company.estimated_tco_kzt || null,
+        next_action: "Перепроверить стек, найти ЛПР и дату продления",
+      },
+    ];
   });
-  const byCode = new Map(segments.map((s) => [s.code, s.id]));
-  const companies = COMPANY_TEMPLATES.map((c) => ({
-    user_id: session.user.id,
-    segment_id: byCode.get(c.segment_code),
-    name: c.name,
-    tier: c.tier,
-    stage: "research",
-    current_software: c.current_software,
-    evidence_url: c.evidence_url,
-    evidence_note: c.evidence_note,
-    evidence_confidence: c.evidence_confidence,
-    decision_maker_role: c.decision_maker_role,
-    why_now: c.why_now,
-    estimated_tco_kzt: c.estimated_tco_kzt || null,
-    next_action: "Перепроверить стек, найти ЛПР и дату продления",
-  }));
-  await restRequest("software_auction_companies", session, {
-    method: "POST",
-    headers: { Prefer: "return=minimal" },
-    body: JSON.stringify(companies),
-  });
+
+  if (missingCompanies.length) {
+    await restRequest("software_auction_companies", session, {
+      method: "POST",
+      headers: { Prefer: "return=minimal" },
+      body: JSON.stringify(missingCompanies),
+    });
+  }
+
   return loadAuctionData(session);
 }
 
