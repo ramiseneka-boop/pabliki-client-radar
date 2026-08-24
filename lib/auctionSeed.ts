@@ -1,0 +1,302 @@
+export const FUNNEL_STAGES = [
+  { key: "research", label: "1. Исследование" },
+  { key: "lpr_found", label: "2. ЛПР найден" },
+  { key: "contacted", label: "3. Первый контакт" },
+  { key: "discovery", label: "4. Discovery с ЛПР" },
+  { key: "tco_confirmed", label: "5. TCO / renewal подтверждены" },
+  { key: "demo", label: "6. Demo согласовано" },
+  { key: "migration_test", label: "7. Тест миграции" },
+  { key: "offer", label: "8. КП отправлено" },
+  { key: "deposit", label: "9. Депозит" },
+  { key: "pilot", label: "10. Пилот" },
+  { key: "won", label: "11. WON" },
+  { key: "lost", label: "LOST" },
+] as const;
+
+export type FunnelStage = (typeof FUNNEL_STAGES)[number]["key"];
+
+export const SEGMENT_TEMPLATES = [
+  {
+    code: "ATS",
+    name: "ATS / Recruitment OS",
+    priority: 1,
+    software: "Huntflow, Potok, Talantix, FriendWork",
+    thesis:
+      "Лучший кандидат на быстрый перехват: цена растет за каждого рекрутера, база переносима, решение принимает HR/Recruitment, продукт можно показать на данных клиента.",
+    benchmark:
+      "Huntflow 2026: Professional 480 000 ₸/рекрутер/год; Maximum 660 000 ₸/рекрутер/год. До 20 мест на стандартных тарифах.",
+    migration_ease: 9,
+    build_ease: 9,
+  },
+  {
+    code: "LMS",
+    name: "Corporate LMS",
+    priority: 2,
+    software: "iSpring Learn, SOHO.LMS, Teachbase, Moodle-интеграторы",
+    thesis:
+      "Высокий годовой чек у компаний с 300–5000 сотрудниками, понятный функционал, миграция курсов и пользователей не останавливает основной бизнес.",
+    benchmark:
+      "SOHO.LMS KZ 2026: 500 сотрудников — 310 990 ₸/мес; 1000 — 491 990 ₸/мес; 2000 — 680 990 ₸/мес при годовой оплате.",
+    migration_ease: 8,
+    build_ease: 8,
+  },
+  {
+    code: "CX",
+    name: "Helpdesk / Omnichannel CX",
+    priority: 3,
+    software: "Zendesk, Usedesk, Freshdesk, Intercom",
+    thesis:
+      "Клиент часто платит сразу за helpdesk, WhatsApp, телефонию и AI. Сильный оффер — один Customer OS вместо 3–4 подписок.",
+    benchmark:
+      "Искать команды от 20 операторов. Основная ценность оффера: 40–50% экономии TCO + WhatsApp/Instagram/Telegram + AI + казахский язык.",
+    migration_ease: 6,
+    build_ease: 6,
+  },
+  {
+    code: "CDP",
+    name: "CDP / Marketing Automation",
+    priority: 4,
+    software: "Mindbox, Maestra, Bloomreach, Altcraft",
+    thesis:
+      "Самые крупные потенциальные контракты, но сложнее миграция. Держать как охоту на китов; строить только при сильном commitment от клиента.",
+    benchmark:
+      "Цель — mature ecommerce/retail с большой клиентской базой и регулярным renewal. Не атаковать тех, кто только что внедрился.",
+    migration_ease: 4,
+    build_ease: 4,
+  },
+] as const;
+
+export type SegmentTemplateCode = (typeof SEGMENT_TEMPLATES)[number]["code"];
+
+export type SeedCompany = {
+  name: string;
+  segment_code: SegmentTemplateCode;
+  tier: "A" | "B" | "C";
+  current_software: string;
+  evidence_url: string;
+  evidence_note: string;
+  evidence_confidence: "high" | "medium" | "low";
+  decision_maker_role: string;
+  why_now: string;
+  estimated_tco_kzt?: number;
+};
+
+export const COMPANY_TEMPLATES: SeedCompany[] = [
+  {
+    name: "Kompra Group / Pro People",
+    segment_code: "ATS",
+    tier: "A",
+    current_software: "Huntflow",
+    evidence_url: "https://astana.careerist.ru/vakansii/it-rekruter-pro-people-85162478.html",
+    evidence_note: "В вакансии прямо указано ведение/обновление базы кандидатов в Huntflow.",
+    evidence_confidence: "high",
+    decision_maker_role: "HRD / Head of Recruitment / CEO",
+    why_now: "Подтвержденный пользователь, доступный ЛПР, IT-среда, быстрый пилот на копии базы.",
+  },
+  {
+    name: "RecruitHub",
+    segment_code: "ATS",
+    tier: "A",
+    current_software: "Huntflow + Notion",
+    evidence_url: "https://hirehi.ru/recruiting/nachinaiushchii-hr-rekruter-76538",
+    evidence_note: "Свежая вакансия 14.08.2026: кандидатов ведут в Huntflow и Notion.",
+    evidence_confidence: "high",
+    decision_maker_role: "Founder / Head of Recruitment",
+    why_now: "Кадровое агентство: продукт является ядром работы, короткая цепочка принятия решения.",
+  },
+  {
+    name: "Kolesa Group",
+    segment_code: "ATS",
+    tier: "A",
+    current_software: "Huntflow",
+    evidence_url: "https://www.remocate.app/",
+    evidence_note: "В публичных вакансиях рекрутмента указывалась работа в Huntflow; перепроверить перед контактом.",
+    evidence_confidence: "medium",
+    decision_maker_role: "HRD / Head of Talent Acquisition",
+    why_now: "Сильный reference-клиент; высокий эффект для дальнейших продаж ATS.",
+  },
+  {
+    name: "SR Technologies",
+    segment_code: "ATS",
+    tier: "A",
+    current_software: "Huntflow + Notion",
+    evidence_url: "https://hh.kz/",
+    evidence_note: "В публичной вакансии рекрутера упоминались Huntflow и Notion; найти актуальный URL перед звонком.",
+    evidence_confidence: "medium",
+    decision_maker_role: "HRD / Recruitment Lead / CEO",
+    why_now: "Вероятно небольшая команда и быстрый цикл пилота; подходит для первого депозита.",
+  },
+  {
+    name: "ROGII",
+    segment_code: "ATS",
+    tier: "A",
+    current_software: "Huntflow + BambooHR",
+    evidence_url: "https://www.linkedin.com/",
+    evidence_note: "В HR-вакансиях фигурировала связка Huntflow + BambooHR; подтвердить текущий стек.",
+    evidence_confidence: "medium",
+    decision_maker_role: "HRD / Head of People",
+    why_now: "Есть возможность позже расширить ATS до HRIS и увеличить контракт.",
+  },
+  {
+    name: "AB Restaurants",
+    segment_code: "LMS",
+    tier: "A",
+    current_software: "iSpring",
+    evidence_url: "https://asiacrm.kz/ispring/",
+    evidence_note: "Указан среди клиентов iSpring у официального партнера в Казахстане.",
+    evidence_confidence: "high",
+    decision_maker_role: "HRD / Head of L&D / COO",
+    why_now: "Большой линейный штат, онбординг и стандарты по множеству ресторанов — ежедневная потребность в LMS.",
+  },
+  {
+    name: "Freedom Mobile",
+    segment_code: "LMS",
+    tier: "A",
+    current_software: "iSpring",
+    evidence_url: "https://asiacrm.kz/ispring/",
+    evidence_note: "Указан среди клиентов iSpring у официального партнера в Казахстане.",
+    evidence_confidence: "high",
+    decision_maker_role: "HRD / L&D Director / Retail Director",
+    why_now: "Розничная сеть и регулярное обучение продуктам — высокий recurring value LMS.",
+  },
+  {
+    name: "Kazakh Tourism",
+    segment_code: "LMS",
+    tier: "A",
+    current_software: "iSpring",
+    evidence_url: "https://asiacrm.kz/ispring/",
+    evidence_note: "Указан среди клиентов iSpring у официального партнера в Казахстане.",
+    evidence_confidence: "high",
+    decision_maker_role: "HRD / L&D / Digital Director",
+    why_now: "Подтвержденный стек; потенциально проще доступ к ответственным лицам, чем в банках.",
+  },
+  {
+    name: "Kazakhmys",
+    segment_code: "LMS",
+    tier: "B",
+    current_software: "iSpring",
+    evidence_url: "https://asiacrm.kz/ispring/",
+    evidence_note: "Указан среди клиентов iSpring у официального партнера в Казахстане.",
+    evidence_confidence: "high",
+    decision_maker_role: "HRD / Corporate University / Procurement",
+    why_now: "Очень большой потенциальный чек, но длиннее security/procurement. Вести параллельно, не ставить план сентября на эту сделку.",
+  },
+  {
+    name: "ForteBank",
+    segment_code: "LMS",
+    tier: "B",
+    current_software: "iSpring",
+    evidence_url: "https://asiacrm.kz/ispring/",
+    evidence_note: "Указан среди клиентов iSpring у официального партнера в Казахстане.",
+    evidence_confidence: "high",
+    decision_maker_role: "HRD / L&D / CIO / Procurement",
+    why_now: "Высокий TCO, но банковские требования увеличивают sales cycle.",
+  },
+  {
+    name: "Bereke Bank",
+    segment_code: "LMS",
+    tier: "B",
+    current_software: "iSpring",
+    evidence_url: "https://asiacrm.kz/ispring/",
+    evidence_note: "Указан среди клиентов iSpring у официального партнера в Казахстане.",
+    evidence_confidence: "high",
+    decision_maker_role: "HRD / L&D / CIO / Procurement",
+    why_now: "Высокий потенциальный чек, но не использовать как единственную ставку на сентябрь.",
+  },
+  {
+    name: "Kaspi.kz",
+    segment_code: "LMS",
+    tier: "C",
+    current_software: "iSpring",
+    evidence_url: "https://asiacrm.kz/ispring/",
+    evidence_note: "Указан среди клиентов iSpring у официального партнера в Казахстане.",
+    evidence_confidence: "high",
+    decision_maker_role: "HRD / L&D / Procurement",
+    why_now: "Огромный reference, но сильная собственная разработка и высокий enterprise barrier. Не приоритет для cash до 30.09.",
+  },
+  {
+    name: "Hasel Kazakhstan",
+    segment_code: "CX",
+    tier: "A",
+    current_software: "Zendesk",
+    evidence_url: "https://storeleads.app/reports/technology/Zendesk/country/KZ",
+    evidence_note: "Технологический мониторинг обнаруживал Zendesk на проекте; подтвердить стек и количество агентов перед оффером.",
+    evidence_confidence: "medium",
+    decision_maker_role: "Head of Customer Service / CX Director / COO",
+    why_now: "Достаточно крупный ecommerce, но потенциально меньше enterprise-бюрократии, чем у крупнейших сетей.",
+  },
+  {
+    name: "Technodom",
+    segment_code: "CX",
+    tier: "B",
+    current_software: "Zendesk",
+    evidence_url: "https://storeleads.app/reports/technology/Zendesk/country/KZ",
+    evidence_note: "Технологический мониторинг обнаруживал Zendesk; подтвердить текущий контракт и число агентов.",
+    evidence_confidence: "medium",
+    decision_maker_role: "CX Director / Contact Center Director / CIO",
+    why_now: "Огромный потенциальный TCO, но сложнее enterprise sales cycle.",
+  },
+  {
+    name: "Beeline Kazakhstan",
+    segment_code: "CX",
+    tier: "B",
+    current_software: "Usedesk",
+    evidence_url: "https://blog.usedesk.com/clients/beelinekz",
+    evidence_note: "Публичный кейс Usedesk: десятки сотрудников поддержки и много каналов. Перед атакой выяснить текущий статус системы.",
+    evidence_confidence: "high",
+    decision_maker_role: "Customer Service Director / Contact Center / CIO / Procurement",
+    why_now: "Доказывает экономику сегмента; потенциальный контракт большой, но вероятен тендер.",
+  },
+  {
+    name: "KIMEX",
+    segment_code: "CDP",
+    tier: "A",
+    current_software: "Mindbox",
+    evidence_url: "https://storeleads.app/reports/technology/Mindbox/country/KZ",
+    evidence_note: "Mindbox обнаруживается на ecommerce-проекте; подтвердить срок использования и renewal.",
+    evidence_confidence: "medium",
+    decision_maker_role: "CMO / CRM Director / Ecommerce Director / CIO",
+    why_now: "Retail + mature marketing automation. Хороший баланс между размером сделки и доступностью ЛПР.",
+  },
+  {
+    name: "Meloman / MARWIN",
+    segment_code: "CDP",
+    tier: "A",
+    current_software: "Mindbox",
+    evidence_url: "https://storeleads.app/reports/technology/Mindbox/country/KZ",
+    evidence_note: "Оба бренда обнаруживаются среди проектов с Mindbox; проверить возможность одного multi-brand контракта.",
+    evidence_confidence: "medium",
+    decision_maker_role: "CMO / CRM Lead / Ecommerce Director",
+    why_now: "Потенциально один multi-brand контракт вместо двух отдельных продаж.",
+  },
+  {
+    name: "Mark Formelle Kazakhstan",
+    segment_code: "CDP",
+    tier: "A",
+    current_software: "Mindbox",
+    evidence_url: "https://storeleads.app/reports/technology/Mindbox/country/KZ",
+    evidence_note: "Mindbox обнаруживается на казахстанском ecommerce-проекте; подтвердить контракт перед оффером.",
+    evidence_confidence: "medium",
+    decision_maker_role: "CMO / CRM Lead / Ecommerce Director",
+    why_now: "Fashion retail — частые покупки, сегментация, retention, loyalty; сильный CDP use case.",
+  },
+  {
+    name: "Arbuz.kz",
+    segment_code: "CDP",
+    tier: "B",
+    current_software: "Mindbox",
+    evidence_url: "https://mindbox.ru/journal/cases/arbuz-kz/",
+    evidence_note: "Есть публичный кейс Mindbox с Arbuz.kz; перед контактом проверить актуальность стека.",
+    evidence_confidence: "high",
+    decision_maker_role: "CMO / CRM Director / Product / CIO",
+    why_now: "Система уже доказала ценность, поэтому продавать не только ценой: нужен parity + AI + снижение TCO.",
+  },
+];
+
+export const AUCTION_WIN_CONDITIONS = {
+  dm_conversations: 10,
+  competitor_confirmed: 5,
+  demo_committed: 3,
+  migration_data_committed: 2,
+  deposit_committed: 1,
+};
