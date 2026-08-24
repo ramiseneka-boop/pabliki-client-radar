@@ -4,6 +4,8 @@ import { usePathname } from "next/navigation";
 
 const nav = [
   { href: "/", label: "Dashboard", icon: "▦" },
+  { href: "/auction", label: "Software Auction", icon: "⚡" },
+  { href: "/auction/playbook", label: "Auction Playbook", icon: "▶" },
   { href: "/workday", label: "Мой день", icon: "☀" },
   { href: "/leads", label: "Лиды", icon: "◎" },
   { href: "/quick-wins", label: "Quick Wins", icon: "⚡" },
@@ -22,6 +24,11 @@ const nav = [
 
 export default function Sidebar() {
   const path = usePathname();
+
+  // Auction is a standalone, mobile-first CRM surface with its own navigation.
+  // Returning null here keeps the legacy Client Radar layout unchanged elsewhere.
+  if (path.startsWith("/auction")) return null;
+
   return (
     <aside className="w-60 shrink-0 bg-white border-r border-slate-200 flex flex-col h-screen sticky top-0">
       <div className="px-5 py-5 border-b border-slate-100">
@@ -35,7 +42,7 @@ export default function Sidebar() {
       </div>
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {nav.map((n) => {
-          const active = n.href === "/" ? path === "/" : path.startsWith(n.href);
+          const active = n.href === "/" ? path === "/" : path === n.href || (n.href !== "/auction" && path.startsWith(n.href));
           return (
             <Link
               key={n.href}
@@ -54,8 +61,8 @@ export default function Sidebar() {
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-slate-200 grid place-items-center text-slate-600 font-semibold">A</div>
           <div className="leading-tight">
-            <div className="text-sm font-medium text-graphite">Айгерим</div>
-            <div className="text-[11px] text-slate-400">Super Admin</div>
+            <div className="text-sm font-medium text-graphite">Super Admin</div>
+            <div className="text-[11px] text-slate-400">Private workspace</div>
           </div>
         </div>
       </div>
