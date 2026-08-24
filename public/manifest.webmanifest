@@ -1,0 +1,19 @@
+{
+  "name": "Software Auction CRM",
+  "short_name": "Auction CRM",
+  "description": "Личная CRM для рынка-аукциона дорогого B2B SaaS",
+  "start_url": "/auction",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f6f8fb",
+  "theme_color": "#0f172a",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "/software-auction-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
