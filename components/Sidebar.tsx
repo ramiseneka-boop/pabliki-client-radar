@@ -24,8 +24,13 @@ const nav = [
 
 export default function Sidebar() {
   const path = usePathname();
+
+  // Auction is a standalone, mobile-first CRM surface with its own navigation.
+  // Returning null here keeps the legacy Client Radar layout unchanged elsewhere.
+  if (path.startsWith("/auction")) return null;
+
   return (
-    <aside className="hidden w-60 shrink-0 bg-white border-r border-slate-200 lg:flex flex-col h-screen sticky top-0">
+    <aside className="w-60 shrink-0 bg-white border-r border-slate-200 flex flex-col h-screen sticky top-0">
       <div className="px-5 py-5 border-b border-slate-100">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-brand text-white grid place-items-center font-bold">P</div>
