@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 
 const nav = [
   { href: "/", label: "Dashboard", icon: "▦" },
+  { href: "/auction", label: "Software Auction", icon: "⚡" },
   { href: "/workday", label: "Мой день", icon: "☀" },
   { href: "/leads", label: "Лиды", icon: "◎" },
   { href: "/quick-wins", label: "Quick Wins", icon: "⚡" },
@@ -23,7 +24,7 @@ const nav = [
 export default function Sidebar() {
   const path = usePathname();
   return (
-    <aside className="w-60 shrink-0 bg-white border-r border-slate-200 flex flex-col h-screen sticky top-0">
+    <aside className="hidden w-60 shrink-0 bg-white border-r border-slate-200 lg:flex flex-col h-screen sticky top-0">
       <div className="px-5 py-5 border-b border-slate-100">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-brand text-white grid place-items-center font-bold">P</div>
@@ -54,8 +55,8 @@ export default function Sidebar() {
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-slate-200 grid place-items-center text-slate-600 font-semibold">A</div>
           <div className="leading-tight">
-            <div className="text-sm font-medium text-graphite">Айгерим</div>
-            <div className="text-[11px] text-slate-400">Super Admin</div>
+            <div className="text-sm font-medium text-graphite">Super Admin</div>
+            <div className="text-[11px] text-slate-400">Private workspace</div>
           </div>
         </div>
       </div>
